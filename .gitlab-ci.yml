@@ -1,0 +1,16 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_DEPTH: 100
+  PKG_VER: 0.0.0  
+
+stages: 
+  - build
+  - poppy
+
+include:
+  - project: 'test/essentials/ci'
+    ref: main
+    file: 'poppy/poppy.yml'
+    inputs:
+      build_windows_static: 'true'
+      build_alse_static: 'true'
