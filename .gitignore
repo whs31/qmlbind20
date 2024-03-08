@@ -33,7 +33,6 @@ docs/*
 # Conan (deps folder must have separate .gitignore)
 CMakeUserPresets.json
 conan_provider.cmake
-dependencies
 
 # Rust
 Cargo.lock
