@@ -62,6 +62,7 @@ if(INTEGRATION_TESTS)
   target_add_integration_tests(${PROJECT_NAME}
     TESTS
       tests/test-main.c++
+      tests/qrc.qrc
   )
 endif()
 

@@ -25,4 +25,11 @@ namespace qmlbind20
       int m_version_major;
       int m_version_minor;
   };
+
+  template<typename T>
+  auto guaranteed_call(T&& func) -> decltype(func())
+  {
+    [[maybe_unused]] volatile auto d = &func;
+    return func();
+  }
 }
