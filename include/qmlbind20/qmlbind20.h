@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <concepts>
 #include <leaf/global.h>
 #include <qqml.h>
 
@@ -26,7 +27,7 @@ namespace qmlbind20
       int m_version_minor;
   };
 
-  template<typename T>
+  template<std::invocable T>
   auto guaranteed_call(T&& func) -> decltype(func())
   {
     [[maybe_unused]] volatile auto d = &func;
