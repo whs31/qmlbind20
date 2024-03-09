@@ -3,6 +3,7 @@ add_executable(${PROJECT_NAME}-bench)
 target_sources(${PROJECT_NAME}-bench
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c++
+    ${CMAKE_CURRENT_SOURCE_DIR}/mock.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qrc.qrc
 )
 

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import io.qmlbind20.test 1.0
 
 ApplicationWindow
 {
@@ -7,4 +8,9 @@ ApplicationWindow
     height: 300
     visible: true
     color: "magenta"
+
+    Text {
+        MockClass { id: mock }
+        text: mock.addPrefix("World", "Hello, ")
+    }
 }
