@@ -10,6 +10,7 @@ project(qmlbind20
 )
 
 option(INTEGRATION_TESTS "Enable integration tests" OFF)
+option(DEV_BINARY "Enable building of dev binary" OFF)
 
 include(dependencies/cmake/all.cmake)
 enable_cross_compile_options()
@@ -66,6 +67,11 @@ if(INTEGRATION_TESTS)
   )
 endif()
 
+if(DEV_BINARY)
+  add_subdirectory(bin)
+endif()
+
 target_install_library(${PROJECT_NAME} NAME qmlbind20 NAMESPACE qmlbind20)
 
 unset(INTEGRATION_TESTS CACHE)
+unset(DEV_BINARY CACHE)

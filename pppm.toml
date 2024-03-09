@@ -6,4 +6,4 @@ description = "C++ to QML bindings inspired by pybind11"
 
 [dependencies]
 cmake = { version = "0.1.2", distribution = "sources" }
-leaf = { version = "0.3.6", distribution = "static" }
+leaf = { version = "0.4.1", distribution = "static" }
