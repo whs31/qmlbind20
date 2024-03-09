@@ -6,7 +6,7 @@
 
 auto main(int argc, char** argv) -> int
 {
-  const auto logger = leaf::Logger(
+  const auto _ = leaf::Logger(
     "test-logger",
     leaf::Logger::DefaultPatterns::SimpleWithThreadInfo,
     leaf::Logger::Level::Trace,

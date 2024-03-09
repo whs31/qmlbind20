@@ -1,3 +1,4 @@
+#include <fmt/color.h>
 #include <qmlbind20/qmlbind20.h>
 
 using std::runtime_error;
@@ -17,7 +18,10 @@ namespace qmlbind20
       throw runtime_error("module version minor cannot be negative");
 
     qmlRegisterModule(name.data(), version_major, version_minor);
-    llog::debug("registered qml module: {}@{}.{}", name, version_major, version_minor);
+    llog::debug("registered qml module: {}{}",
+      fmt::format(fg(fmt::color::blanched_almond) | fmt::emphasis::bold, "{}@", name),
+      fmt::format(fg(fmt::color::coral) | fmt::emphasis::bold, "{}.{}", version_major, version_minor)
+    );
   }
 
   auto module_::name() const -> string_view { return this->m_name; }
