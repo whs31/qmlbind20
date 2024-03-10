@@ -11,10 +11,10 @@ namespace qmlbind20
   using std::string_view;
   using namespace leaf::types;
 
-  class module_
+  class module
   {
     public:
-      module_(string_view name, int version_major, int version_minor);
+      module(string_view name, int version_major, int version_minor);
 
       [[nodiscard]] auto name() const -> string_view;
       [[nodiscard]] auto version() const -> string;
@@ -22,6 +22,19 @@ namespace qmlbind20
       [[nodiscard]] auto version_minor() const -> int;
 
     protected:
+      string m_name;
+      int m_version_major;
+      int m_version_minor;
+  };
+
+  class component
+  {
+    public:
+      component(string_view name, int version_major, int version_minor);
+
+      auto inherit(QObject* object) -> void;
+
+    private:
       string m_name;
       int m_version_major;
       int m_version_minor;

@@ -39,8 +39,10 @@ target_sources(${PROJECT_NAME}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/qmlbind20/qmlbind20.h> $<INSTALL_INTERFACE:include/qmlbind20/qmlbind20.h>
 
   PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/utils.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/qmlbind20.c++
     ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/module.c++
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/c++/component.c++
 )
 
 target_link_libraries(${PROJECT_NAME}
