@@ -33,7 +33,7 @@ namespace qmlbind20
   [[nodiscard]] auto remove_namespace(string_view type_name) -> string;
 
   template <typename T>
-  concept TQObject = std::is_base_of_v<QObject, T>;
+  concept QObjectDerived = std::is_base_of_v<QObject, T>;
 
   enum class ListingBehavior
   {
@@ -55,7 +55,7 @@ namespace qmlbind20
       QObject* m_underlying;
   };
 
-  template <TQObject T>
+  template <QObjectDerived T>
   class inherited_component final : public basic_component
   {
     public:
@@ -77,7 +77,7 @@ namespace qmlbind20
       [[nodiscard]] auto version_major() const -> int;
       [[nodiscard]] auto version_minor() const -> int;
 
-      template <TQObject T>
+      template <QObjectDerived T>
       auto inherited_component() -> module&;
 
     protected:
@@ -96,18 +96,18 @@ namespace qmlbind20
 
 namespace qmlbind20
 {
-  template <TQObject T> inherited_component<T>::inherited_component()
+  template <QObjectDerived T> inherited_component<T>::inherited_component()
     : basic_component(qmlbind20::remove_namespace(leaf::utils::type_name<T>()))
   {
     this->m_underlying = new T(nullptr);
   }
 
-  template <TQObject T>
+  template <QObjectDerived T>
   auto inherited_component<T>::underlying_metaobject() const -> expected<T *, string> {
     return qobject_cast<T*>(this->m_underlying);
   }
 
-  template <TQObject T>
+  template <QObjectDerived T>
   auto inherited_component<T>::functions(const ListingBehavior behavior) const -> list<string>
   {
     auto ret = list<string>();
@@ -118,7 +118,7 @@ namespace qmlbind20
         ret.remove_if([&f](const auto &s) { return s == f; });
     return ret;
   }
-  template <TQObject T>
+  template <QObjectDerived T>
   auto inherited_component<T>::properties(ListingBehavior) const -> list<string>
   {
     auto ret = list<string>();
@@ -127,7 +127,7 @@ namespace qmlbind20
     return ret;
   }
 
-  template <TQObject T>
+  template <QObjectDerived T>
   auto module::inherited_component() -> module&
   {
     const auto c = qmlbind20::inherited_component<T>();
