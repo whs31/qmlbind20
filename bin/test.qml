@@ -13,6 +13,6 @@ ApplicationWindow
 
     Text {
         QtMock { id: mock }
-        text: mock.addPrefix("World", "Hello, ")
+        text: mock.addPrefix("World", "Hello, ")Z
     }
 }
