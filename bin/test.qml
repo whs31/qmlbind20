@@ -1,5 +1,7 @@
-import QtQuick
-import QtQuick.Controls
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+
 import io.qmlbind20.test 1.0
 
 ApplicationWindow

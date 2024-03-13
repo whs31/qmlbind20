@@ -21,11 +21,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(leaf REQUIRED CONFIG)
-find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR}
   COMPONENTS
     Core
     Quick
+    QuickControls2
   REQUIRED
 )
 
@@ -50,6 +51,7 @@ target_link_libraries(${PROJECT_NAME}
     leaf::leaf
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
 )
 
 target_include_directories(${PROJECT_NAME}

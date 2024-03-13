@@ -3,6 +3,7 @@
 #include <qtimer.h>
 #include <qguiapplication.h>
 #include <qqmlapplicationengine.h>
+#include "mock.h"
 
 auto main(int argc, char** argv) -> int
 {
@@ -20,7 +21,10 @@ auto main(int argc, char** argv) -> int
   /* # tests # */
   namespace qml = qmlbind20;
 
-  const auto m = qml::module("io.qmlbind20.test", 1, 0);
+  qml::module("io.qmlbind20.test", 1, 0)
+    .component(qml::component("MockClass")
+      .inherit<mock::QtMock>()
+    );
 
   const QQmlApplicationEngine engine("qrc:/qmlbind20/test.qml");
   QObject::connect(&engine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);

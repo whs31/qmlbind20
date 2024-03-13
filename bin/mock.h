@@ -11,7 +11,7 @@ namespace mock
 
     public:
       explicit QtMock(QObject* parent = nullptr) : QObject(parent) {}
-      ~QtMock() override = default;
+      virtual ~QtMock() override = default;
 
       Q_INVOKABLE static QString addPrefix(const QString& str, const QString& prefix)
       {
