@@ -12,7 +12,7 @@ ApplicationWindow
     color: "magenta"
 
     Text {
-        MockClass { id: mock }
+        QtMock { id: mock }
         text: mock.addPrefix("World", "Hello, ")
     }
 }

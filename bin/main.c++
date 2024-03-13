@@ -22,9 +22,7 @@ auto main(int argc, char** argv) -> int
   namespace qml = qmlbind20;
 
   qml::module("io.qmlbind20.test", 1, 0)
-    .component(qml::component("MockClass")
-      .inherit<mock::QtMock>()
-    );
+    .inherited_component<mock::QtMock>();
 
   const QQmlApplicationEngine engine("qrc:/qmlbind20/test.qml");
   QObject::connect(&engine, &QQmlEngine::quit, qApp, &QCoreApplication::quit);

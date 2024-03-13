@@ -2,7 +2,9 @@
 
 #include <string>
 #include <concepts>
+#include <fmt/color.h>
 #include <leaf/global.h>
+#include <leaf/utils/rtti.h>
 #include <qqml.h>
 
 namespace qmlbind20
@@ -13,10 +15,36 @@ namespace qmlbind20
   using std::shared_ptr;
   using namespace leaf::types;
 
-  class component;
+  [[nodiscard]] auto remove_namespace(string_view type_name) -> string;
 
-  template<typename T>
+  template <typename T>
   concept TQObject = std::is_base_of_v<QObject, T>;
+
+  class component;
+  // template <TQObject T> class inherited_component;
+
+  template <TQObject T>
+  class inherited_component
+  {
+    public:
+      using type = T;
+
+      explicit inherited_component()
+        : m_name(qmlbind20::remove_namespace(leaf::utils::type_name<type>())),
+          m_underlying(new type(nullptr))
+      {}
+
+      ~inherited_component() { delete this->m_underlying; }
+
+      [[nodiscard]] auto name() const -> string_view { return this->m_name; }
+      [[nodiscard]] auto underlying_metaobject() const -> expected<type*, string> {
+        return qobject_cast<type*>(this->m_underlying);
+      }
+
+    private:
+      string m_name;
+      QObject* m_underlying;
+  };
 
   class module
   {
@@ -29,6 +57,23 @@ namespace qmlbind20
       [[nodiscard]] auto version_minor() const -> int;
 
       auto component(const qmlbind20::component& c) const -> void;
+
+      template <TQObject T>
+      auto inherited_component() const -> void
+      {
+        const auto c = qmlbind20::inherited_component<T>();
+        if(const auto m = c.underlying_metaobject(); not m)
+          throw std::runtime_error(m.error());
+        qmlRegisterType<T>(
+          this->name().data(),
+          this->version_major(),
+          this->version_minor(),
+          c.name().data()
+        );
+        llog::debug("registered inherited qml component: {}",
+          fmt::format(fg(fmt::color::medium_violet_red) | fmt::emphasis::bold, "{}", c.name())
+        );
+      }
 
     protected:
       string m_name;
@@ -44,14 +89,6 @@ namespace qmlbind20
 
       [[nodiscard]] auto name() const -> string_view;
       [[nodiscard]] auto underlying_metaobject() const -> expected<QObject*, string>;
-
-      template <typename T>
-      [[nodiscard]] auto underlying_metaobject_t() const -> expected<T*, string>
-      {
-        if(not this->m_underlying)
-          return leaf::Err("metaobject is null");
-        return static_cast<T*>(this->m_underlying);
-      }
 
       template <TQObject T>
       auto inherit() -> component&;
