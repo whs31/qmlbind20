@@ -23,24 +23,4 @@ namespace qmlbind20
   auto module::version() const -> string { return fmt::format("{}.{}", this->m_version_major, this->m_version_minor); }
   auto module::version_major() const -> int { return this->m_version_major; }
   auto module::version_minor() const -> int { return this->m_version_minor; }
-  auto module::component(const qmlbind20::basic_component& c) const -> void
-  {
-    if(const auto m = c.underlying_metaobject(); not m)
-      throw runtime_error(m.error());
-    qmlRegisterType<std::remove_reference_t<decltype(*(c.underlying_metaobject().value()))>>(
-      this->name().data(),
-      this->version_major(),
-      this->version_minor(),
-      c.name().data()
-    );
-
-    llog::debug("registered qml component: {}",
-      fmt::format(fg(fmt::color::yellow_green) | fmt::emphasis::bold, "{}", c.name())
-    );
-  }
-
-  // auto module::component(qmlbind20::component&& c) -> void
-  // {
-  //   qmlRegisterType(this->name().data(), this->version_major(), this->version_minor(), c.name().data(), "QmlComponent");
-  // }
 } // namespace qmlbind20

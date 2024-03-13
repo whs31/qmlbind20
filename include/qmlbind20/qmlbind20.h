@@ -77,10 +77,8 @@ namespace qmlbind20
       [[nodiscard]] auto version_major() const -> int;
       [[nodiscard]] auto version_minor() const -> int;
 
-      auto component(const qmlbind20::basic_component& c) const -> void;
-
       template <TQObject T>
-      auto inherited_component() const -> void;
+      auto inherited_component() -> module&;
 
     protected:
       string m_name;
@@ -130,7 +128,7 @@ namespace qmlbind20
   }
 
   template <TQObject T>
-  auto module::inherited_component() const -> void
+  auto module::inherited_component() -> module&
   {
     const auto c = qmlbind20::inherited_component<T>();
     if(const auto m = c.underlying_metaobject(); not m)
@@ -158,5 +156,7 @@ namespace qmlbind20
       llog::trace("\t - {}",
         fmt::format(fg(fmt::color::lime_green) | fmt::emphasis::bold, "{}", p)
       );
+
+    return *this;
   }
 } // namespace qmlbind20
