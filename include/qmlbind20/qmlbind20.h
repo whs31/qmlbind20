@@ -41,11 +41,11 @@ namespace qmlbind20
     ExcludeQt
   };
 
-  class component
+  class basic_component
   {
     public:
-      explicit component(string_view component_name);
-      virtual ~component() { delete this->m_underlying; }
+      explicit basic_component(string_view component_name);
+      virtual ~basic_component() { delete this->m_underlying; }
 
       [[nodiscard]] auto name() const -> string_view;
       [[nodiscard]] auto underlying_metaobject() const -> expected<QObject*, string>;
@@ -56,7 +56,7 @@ namespace qmlbind20
   };
 
   template <TQObject T>
-  class inherited_component final : public component
+  class inherited_component final : public basic_component
   {
     public:
       explicit inherited_component();
@@ -77,7 +77,7 @@ namespace qmlbind20
       [[nodiscard]] auto version_major() const -> int;
       [[nodiscard]] auto version_minor() const -> int;
 
-      auto component(const qmlbind20::component& c) const -> void;
+      auto component(const qmlbind20::basic_component& c) const -> void;
 
       template <TQObject T>
       auto inherited_component() const -> void;
@@ -99,7 +99,7 @@ namespace qmlbind20
 namespace qmlbind20
 {
   template <TQObject T> inherited_component<T>::inherited_component()
-    : component(qmlbind20::remove_namespace(leaf::utils::type_name<T>()))
+    : basic_component(qmlbind20::remove_namespace(leaf::utils::type_name<T>()))
   {
     this->m_underlying = new T(nullptr);
   }

@@ -5,6 +5,22 @@
 
 namespace mock
 {
+  class CppMock final
+  {
+    public:
+      CppMock() = default;
+      virtual ~CppMock() = default;
+
+      static auto add_prefix(const std::string_view str, const std::string_view prefix) -> std::string
+      {
+        return std::string(prefix) + std::string(str);
+      }
+
+
+    private:
+      int m_dummy = 0;
+  };
+
   class QtMock : public QObject
   {
     Q_OBJECT

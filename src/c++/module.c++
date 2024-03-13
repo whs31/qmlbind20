@@ -23,7 +23,7 @@ namespace qmlbind20
   auto module::version() const -> string { return fmt::format("{}.{}", this->m_version_major, this->m_version_minor); }
   auto module::version_major() const -> int { return this->m_version_major; }
   auto module::version_minor() const -> int { return this->m_version_minor; }
-  auto module::component(const qmlbind20::component& c) const -> void
+  auto module::component(const qmlbind20::basic_component& c) const -> void
   {
     if(const auto m = c.underlying_metaobject(); not m)
       throw runtime_error(m.error());
