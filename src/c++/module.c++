@@ -1,4 +1,3 @@
-#include <fmt/color.h>
 #include <qmlbind20/qmlbind20.h>
 #include <utils.h>
 

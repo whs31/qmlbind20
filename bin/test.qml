@@ -11,8 +11,24 @@ ApplicationWindow
     visible: true
     color: "magenta"
 
+    QtMock { id: mock; dummy: 1337 }
+
     Text {
-        QtMock { id: mock }
         text: mock.addPrefix("World", "Hello, ")
+    }
+
+    Text {
+        id: propertytest
+        anchors.centerIn: parent
+        text: mock.dummy
+    }
+
+    Button {
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: propertytest.bottom
+            topMargin: 10
+        }
+        onPressed: mock.dummy = mock.dummy + 1
     }
 }

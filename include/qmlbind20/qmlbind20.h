@@ -4,6 +4,8 @@
 #pragma once
 
 #include <string>
+#include <list>
+#include <array>
 #include <concepts>
 #include <fmt/color.h>
 #include <leaf/global.h>
@@ -12,16 +14,32 @@
 
 namespace qmlbind20
 {
+  using std::list;
+  using std::array;
   using std::string;
   using std::string_view;
   using std::unique_ptr;
   using std::shared_ptr;
+  using namespace std::string_view_literals;
   using namespace leaf::types;
 
+  constexpr array QT_DEFAULT_FUNCTIONS = {
+    "destroyed()"sv,
+    "destroyed(QObject*)"sv,
+    "objectNameChanged(QString)"sv,
+    "deleteLater()"sv,
+    "_q_reregisterTimers(void*)"sv
+  };
   [[nodiscard]] auto remove_namespace(string_view type_name) -> string;
 
   template <typename T>
   concept TQObject = std::is_base_of_v<QObject, T>;
+
+  enum class ListingBehavior
+  {
+    All,
+    ExcludeQt
+  };
 
   class component
   {
@@ -45,6 +63,7 @@ namespace qmlbind20
       virtual ~inherited_component() final = default;
 
       [[nodiscard]] auto underlying_metaobject() const -> expected<T*, string>;
+      [[nodiscard]] auto functions(ListingBehavior) const -> list<string>;
   };
 
   class module
@@ -84,7 +103,22 @@ namespace qmlbind20
     this->m_underlying = new T(nullptr);
   }
 
-  template <TQObject T> auto inherited_component<T>::underlying_metaobject() const -> expected<T*, string> { return qobject_cast<T*>(this->m_underlying); }
+  template <TQObject T>
+  auto inherited_component<T>::underlying_metaobject() const -> expected<T *, string> {
+    return qobject_cast<T*>(this->m_underlying);
+  }
+
+  template <TQObject T>
+  auto inherited_component<T>::functions(ListingBehavior behavior) const -> list<string>
+  {
+    auto ret = list<string>();
+    for(auto i = 0; i < T::staticMetaObject.methodCount(); ++i)
+      ret.emplace_back(T::staticMetaObject.method(i).methodSignature().data());
+    if(behavior == ListingBehavior::ExcludeQt)
+      for(const auto& f : QT_DEFAULT_FUNCTIONS)
+        ret.remove_if([&f](const auto& s) { return s == f; });
+    return ret;
+  }
 
   template <TQObject T>
   auto module::inherited_component() const -> void
@@ -99,7 +133,14 @@ namespace qmlbind20
       c.name().data()
     );
     llog::debug("registered inherited qml component: {}",
-      fmt::format(fg(fmt::color::medium_violet_red) | fmt::emphasis::bold, "{}", c.name())
+      fmt::format(fg(fmt::color::light_golden_rod_yellow) | fmt::emphasis::bold, "{}", c.name())
     );
+    llog::trace("\t {} functions:",
+      fmt::format(fg(fmt::color::light_golden_rod_yellow) | fmt::emphasis::bold, "{}", c.name())
+    );
+    for(const auto& f : c.functions(ListingBehavior::ExcludeQt))
+      llog::trace("\t - {}",
+        fmt::format(fg(fmt::color::alice_blue) | fmt::emphasis::bold, "{}", f)
+      );
   }
 } // namespace qmlbind20
