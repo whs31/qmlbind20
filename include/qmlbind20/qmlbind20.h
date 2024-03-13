@@ -64,6 +64,7 @@ namespace qmlbind20
 
       [[nodiscard]] auto underlying_metaobject() const -> expected<T*, string>;
       [[nodiscard]] auto functions(ListingBehavior) const -> list<string>;
+      [[nodiscard]] auto properties(ListingBehavior) const -> list<string>;
   };
 
   class module
@@ -109,14 +110,22 @@ namespace qmlbind20
   }
 
   template <TQObject T>
-  auto inherited_component<T>::functions(ListingBehavior behavior) const -> list<string>
+  auto inherited_component<T>::functions(const ListingBehavior behavior) const -> list<string>
   {
     auto ret = list<string>();
     for(auto i = 0; i < T::staticMetaObject.methodCount(); ++i)
       ret.emplace_back(T::staticMetaObject.method(i).methodSignature().data());
     if(behavior == ListingBehavior::ExcludeQt)
-      for(const auto& f : QT_DEFAULT_FUNCTIONS)
-        ret.remove_if([&f](const auto& s) { return s == f; });
+      for(const auto &f : QT_DEFAULT_FUNCTIONS)
+        ret.remove_if([&f](const auto &s) { return s == f; });
+    return ret;
+  }
+  template <TQObject T>
+  auto inherited_component<T>::properties(ListingBehavior) const -> list<string>
+  {
+    auto ret = list<string>();
+    for(auto i = 0; i < T::staticMetaObject.propertyCount(); ++i)
+      ret.emplace_back(T::staticMetaObject.property(i).name());
     return ret;
   }
 
@@ -140,7 +149,14 @@ namespace qmlbind20
     );
     for(const auto& f : c.functions(ListingBehavior::ExcludeQt))
       llog::trace("\t - {}",
-        fmt::format(fg(fmt::color::alice_blue) | fmt::emphasis::bold, "{}", f)
+        fmt::format(fg(fmt::color::cyan) | fmt::emphasis::bold, "{}", f)
+      );
+    llog::trace("\t {} properties:",
+      fmt::format(fg(fmt::color::light_golden_rod_yellow) | fmt::emphasis::bold, "{}", c.name())
+    );
+    for(const auto& p : c.properties(ListingBehavior::ExcludeQt))
+      llog::trace("\t - {}",
+        fmt::format(fg(fmt::color::lime_green) | fmt::emphasis::bold, "{}", p)
       );
   }
 } // namespace qmlbind20
