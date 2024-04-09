@@ -1,0 +1,7 @@
+---
+static:
+  toolchain:
+    cmake:
+      generator: Ninja
+      definitions: 
+        build_shared_libs: "off"
